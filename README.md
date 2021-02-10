@@ -119,7 +119,7 @@ terraform {
 ```
 
 
-## Give a go
+## Give it a go
 
 In you favorite shell, run terraform apply and review the execution plan on what will be added, changed and detroyed. Acknowledge by typing: yes 
 
