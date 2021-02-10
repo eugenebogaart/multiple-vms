@@ -27,15 +27,13 @@ Initializing provider plugins...
 
 ## Basic Terraform resources in script
 * azurerm_resource_group, create a Azure resource group to hold vnet and other resources
-* azurerm_virtual_network, create a Azure Virtual Network to peer into
-* azurerm_private_endpoint, creates the endpoint in Azure
-
-## In order to provision a Atlas cluster and an Azure VM:
+* azurerm_virtual_network, create a Azure Virtual Network 
 * azurerm_subnet, 
 * azurerm_public_ip,
 * azurerm_network_security_group,
 * azurerm_network_interface,
-* azurerm_linux_virtual_machine,
+* azurerm_linux_virtual_machine, as many as you configured in locals.tf (local.count)
+  
 
  
 ## Configure Script - Credentials: "variables.tf"
