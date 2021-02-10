@@ -1,4 +1,4 @@
-# Multiple Azure Virtual Machine with one command 
+# Multiple Azure Virtual Machines with one command 
 
 ## Background
 Based on an small Proof of Concept to make multiple virtual machines for bigger test, the following generic script was created
