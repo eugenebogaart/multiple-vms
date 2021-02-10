@@ -1,6 +1,4 @@
 locals {
-  # New empty Atlas project name to create in organization
-  project_id            = "Multiple-project"
   # A Azure resource group
   resource_group_name   = "Multiple-demo-vms"
   # Associated Azure vnet

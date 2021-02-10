@@ -24,45 +24,45 @@ provider "azurerm" {
 }
 
 # Create a resource group
-resource "azurerm_resource_group" "atlas-group" {
+resource "azurerm_resource_group" "multi-vms" {
     name     = local.resource_group_name
     location = local.location
 
     tags = {
-        environment = "Atlas Demo"
+        environment = "Multi VM Demo"
     }
 }
 
 # Create a virtual network within the resource group
-resource "azurerm_virtual_network" "atlas-group" {
+resource "azurerm_virtual_network" "multi-vms" {
     name                = local.vnet_name
-    resource_group_name = azurerm_resource_group.atlas-group.name
-    location            = azurerm_resource_group.atlas-group.location
+    resource_group_name = azurerm_resource_group.multi-vms.name
+    location            = azurerm_resource_group.multi-vms.location
     address_space       = local.address_space
  
     tags = {
-        environment = "Atlas Demo"
+        environment = "Multi VM Demo"
     }
 }
 
 
 # Create a subnet in virtual network,
-resource "azurerm_subnet" "atlas-group" {
+resource "azurerm_subnet" "multi-vms" {
     name                 = local.subnet
     address_prefixes     = [local.subnet_address_space]
-    resource_group_name  = azurerm_resource_group.atlas-group.name
-    virtual_network_name = azurerm_virtual_network.atlas-group.name
+    resource_group_name  = azurerm_resource_group.multi-vms.name
+    virtual_network_name = azurerm_virtual_network.multi-vms.name
 }
 
 resource "azurerm_public_ip" "demo-vm-ip" {
     name                         = "myPublicIP-${format("%02d", count.index)}"
     count                        = local.azure_vm_count
     location                     = local.location_alt
-    resource_group_name          = azurerm_resource_group.atlas-group.name
+    resource_group_name          = azurerm_resource_group.multi-vms.name
     allocation_method            = "Dynamic"
 
     tags = {
-        environment = "Atlas Demo"
+        environment = "Multi VM Demo"
     }
 }
 
@@ -70,7 +70,7 @@ resource "azurerm_public_ip" "demo-vm-ip" {
 resource "azurerm_network_security_group" "demo-vm-nsg" {
     name                = "myAtlasDemo"
     location            = local.location_alt
-    resource_group_name = azurerm_resource_group.atlas-group.name
+    resource_group_name = azurerm_resource_group.multi-vms.name
 
     # Allow inbound SSH traffic
     security_rule {
@@ -86,7 +86,7 @@ resource "azurerm_network_security_group" "demo-vm-nsg" {
     }
 
     tags = {
-        environment                = "Atlas Demo"
+        environment                = "Multi VM Demo"
     }
 }
 
@@ -95,17 +95,17 @@ resource "azurerm_network_interface" "demo-vm-nic" {
     name                      = "myNIC-${format("%02d", count.index)}"
     count                     = local.azure_vm_count
     location                  = azurerm_network_security_group.demo-vm-nsg.location
-    resource_group_name       = azurerm_resource_group.atlas-group.name
+    resource_group_name       = azurerm_resource_group.multi-vms.name
 
     ip_configuration {
         name                          = "myNicConfiguration"
-        subnet_id                     = azurerm_subnet.atlas-group.id
+        subnet_id                     = azurerm_subnet.multi-vms.id
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = element(azurerm_public_ip.demo-vm-ip.*.id, count.index)
     }
 
     tags = {
-        environment = "Atlas Demo"
+        environment = "Multi VM Demo"
     }
 
     #depends_on = [ azurerm_network_interface.demo-vm-nic ]
@@ -119,7 +119,7 @@ resource "azurerm_network_interface" "demo-vm-nic" {
 # }
 
 # resource "azurerm_subnet_network_security_group_association" "demo_nsg_assoc" {
-#     subnet_id = azurerm_subnet.atlas-group.id
+#     subnet_id = azurerm_subnet.multi-vms.id
 #     network_security_group_id = azurerm_network_security_group.demo-vm-nsg.id
 # }
 
@@ -128,7 +128,7 @@ resource "azurerm_linux_virtual_machine" "demo-vm" {
     name                  = "${local.azure_vm_name}-${format("%02d", count.index)}"
     count                 = local.azure_vm_count
     location              = local.location_alt
-    resource_group_name   = azurerm_resource_group.atlas-group.name
+    resource_group_name   = azurerm_resource_group.multi-vms.name
     size                  = local.azure_vm_size
     admin_username        = local.admin_username
     admin_password        = var.admin_password
